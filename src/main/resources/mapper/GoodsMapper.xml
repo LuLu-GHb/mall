@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.GoodsMapper">
+
+    <resultMap id="BaseResultMap" type="com.example.entity.Goods">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="name" column="name" jdbcType="VARCHAR"/>
+            <result property="img" column="img" jdbcType="VARCHAR"/>
+            <result property="description" column="description" jdbcType="VARCHAR"/>
+            <result property="price" column="price" jdbcType="DOUBLE"/>
+            <result property="unit" column="unit" jdbcType="VARCHAR"/>
+            <result property="count" column="count" jdbcType="INTEGER"/>
+            <result property="type_id" column="type_id" jdbcType="INTEGER"/>
+            <result property="business_id" column="business_id" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,name,img,
+        description,price,unit,
+        count,type_id,business_id
+    </sql>
+</mapper>
