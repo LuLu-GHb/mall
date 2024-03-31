@@ -10,15 +10,10 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.common.Constants;
 import com.example.common.Result;
 import com.example.common.enums.RoleEnum;
-import com.example.entity.Account;
-import com.example.entity.Business;
 import com.example.entity.Goods;
 import com.example.service.GoodsService;
-import com.example.utils.TokenUtils;
-import com.github.pagehelper.PageInfo;
+
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -70,8 +65,8 @@ public class GoodsController {
     /**
      * 根据ID查询
      */
-    @GetMapping("/selectById/{id}")
-    public Result selectById(@PathVariable Integer id) {
+    @GetMapping("/selectById")
+    public Result selectById(@RequestParam Integer id) {
         Goods goods = goodsService.getById(id);
         return Result.success(goods);
     }
@@ -86,6 +81,34 @@ public class GoodsController {
         return Result.success(list);
     }
 
+    /*
+     * 商城根据类型查询
+     */
+    @GetMapping("/selectByTypeId")
+    public Result selectByTypeId(@RequestParam Integer id) {
+        QueryWrapper<Goods> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("type_id",id);
+        List<Goods> list = goodsService.list(queryWrapper);
+        return Result.success(list);
+    }
+    /*
+    * 查询店铺所有商品*/
+    @GetMapping("/selectByBusinessId")
+    public Result selectByBusinessId(@RequestParam Integer id) {
+        QueryWrapper<Goods> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("business_id",id);
+        List<Goods> list = goodsService.list(queryWrapper);
+        return Result.success(list);
+    }
+    /*
+    * 查询top15
+    */
+    @GetMapping("/selectTop15")
+    public Result selectTop15() {
+        List<Goods> list = goodsService.selectTop15();
+        return Result.success(list);
+    }
+//todo,商品页面显示商家
     /**
      * 分页查询
      */
