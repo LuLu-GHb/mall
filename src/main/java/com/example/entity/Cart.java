@@ -9,12 +9,12 @@ import lombok.Data;
 import java.io.Serializable;
 
 /**
- * 商品信息表
- * @TableName goods
+ * 购物车表
+ * @TableName cart
  */
-@TableName(value ="goods")
+@TableName(value ="cart")
 @Data
-public class Goods implements Serializable {
+public class Cart implements Serializable {
     /**
      * ID
      */
@@ -22,47 +22,27 @@ public class Goods implements Serializable {
     private Integer id;
 
     /**
-     * 商品名称
+     * 用户ID
      */
-    private String name;
+    @TableField("user_id")
+    private Integer userId;
 
     /**
-     * 商品主图
+     * 商品ID
      */
-    private String img;
+    @TableField("goods_id")
+    private Integer goodsId;
 
     /**
-     * 商品介绍
-     */
-    private String description;
-
-    /**
-     * 商品价格
-     */
-    private Double price;
-
-    /**
-     * 计件单位
-     */
-    private String unit;
-
-    /**
-     * 商品销量
-     */
-    private Integer count;
-
-    /**
-     * 分类ID
-     */
-    @TableField("type_id")
-    private Integer typeId;
-
-    /**
-     * 商家ID
+     * 店铺ID
      */
     @TableField("business_id")
     private Integer businessId;
 
+    /**
+     * 数量
+     */
+    private Integer num;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;

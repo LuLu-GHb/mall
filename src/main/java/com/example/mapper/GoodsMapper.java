@@ -12,6 +12,7 @@ import com.example.entity.Goods;
 */
 public interface GoodsMapper extends BaseMapper<Goods> {
 
+
 }
 
 

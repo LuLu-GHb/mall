@@ -10,9 +10,15 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.common.Constants;
 import com.example.common.Result;
 import com.example.common.enums.RoleEnum;
+import com.example.entity.Business;
 import com.example.entity.Goods;
+import com.example.entity.Typee;
+import com.example.entity.goods.GoodsDetail;
+import com.example.service.BusinessService;
 import com.example.service.GoodsService;
 
+import com.example.service.TypeService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -25,6 +31,10 @@ public class GoodsController {
 
     @Resource
     private GoodsService goodsService;
+    @Resource
+    TypeService typeService;
+    @Resource
+    BusinessService businessService;
 
     /**
      * 新增
@@ -67,8 +77,15 @@ public class GoodsController {
      */
     @GetMapping("/selectById")
     public Result selectById(@RequestParam Integer id) {
+        GoodsDetail goodsDetail = new GoodsDetail();
+        System.out.println("-----------------------"+id);
         Goods goods = goodsService.getById(id);
-        return Result.success(goods);
+        Typee type = typeService.getById(goods.getTypeId());
+        Business business = businessService.getById(goods.getBusinessId());
+        BeanUtils.copyProperties(goods,goodsDetail);
+        goodsDetail.setTypeName(type.getName());
+        goodsDetail.setBusinessName(business.getName());
+        return Result.success(goodsDetail);
     }
 
     /**
@@ -127,9 +144,8 @@ public class GoodsController {
                 lqw.like(Goods::getName, goods.getName());
             }
             if (RoleEnum.BUSINESS.name().equals(role)) {
-                lqw.eq(Goods::getBusiness_id, userId);
+                lqw.eq(Goods::getBusinessId, userId);
             }
-            System.out.println("-------------------------------------------" + userId);
 
             IPage<Goods> resultpage = goodsService.page(page, lqw);
             return Result.success(resultpage);
