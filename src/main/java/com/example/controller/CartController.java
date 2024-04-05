@@ -2,20 +2,17 @@ package com.example.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.common.Result;
-import com.example.entity.*;
+import com.example.entity.Business;
+import com.example.entity.Cart;
+import com.example.entity.Goods;
 import com.example.entity.cart.CartDetail;
-import com.example.entity.collect.CollectDetail;
-import com.example.service.AddressService;
 import com.example.service.BusinessService;
 import com.example.service.CartService;
 import com.example.service.GoodsService;
-import com.github.pagehelper.PageInfo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
-
 import javax.annotation.Resource;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -86,27 +83,7 @@ public class CartController {
         return Result.success(list);
     }
 
-//    /**
-//     * 分页查询
-//     */
-//    @GetMapping("/selectPage")
-//    public Result selectPage(Integer userId,
-//                             @RequestParam(defaultValue = "1") Integer pageNum,
-//                             @RequestParam(defaultValue = "10") Integer pageSize) {
-//        Page<Cart> page = new Page<>(pageNum, pageSize);
-//        LambdaQueryWrapper<Cart> lqw = new LambdaQueryWrapper<>();
-//        // 添加条件判断，如果查询条件不为空，则进行模糊查询
-////        if (StringUtils.isNotBlank(business.getUsername())) {
-////            lqw.like(Address::getUsername, business.getUsername());
-////        }
-//        lqw.eq(Cart::getUserId,userId);
-//        IPage<Cart> resultpage = cartService.page(page,lqw);
-//        return Result.success(resultpage);
-//
-//    }
-    /**
-     * 分页查询
-     */
+
     @GetMapping("/selectPage")
     public Result selectPage(Integer userId,
                              @RequestParam(defaultValue = "1") Integer pageNum,
