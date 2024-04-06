@@ -14,6 +14,7 @@ import com.example.service.BusinessService;
 import com.example.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -33,6 +34,7 @@ public class TokenUtils {
 
     private static AdminService staticAdminService;
     private static BusinessService staticBusinessService;
+    private static UserService staticUserService;
 
     @Resource
     AdminService adminService;
@@ -42,11 +44,13 @@ public class TokenUtils {
     UserService userService;
 
     @PostConstruct
-    public void setUserService() {
+    public void setAdminService() {
         staticAdminService = adminService;
     }
     @PostConstruct
     public void setBusinessService() { staticBusinessService = businessService; }
+    @PostConstruct
+    public void setUserService() { staticUserService = userService; }
 
     public static Account account;
     public static Business business;
@@ -74,9 +78,15 @@ public class TokenUtils {
                     return staticAdminService.selectById(Integer.valueOf(userId));
                 }
                 if (RoleEnum.BUSINESS.name().equals(role)) {
-                    business = staticBusinessService.getById(Integer.valueOf(userId));
-                    BeanUtil.copyProperties(business, account);
+//                    business = staticBusinessService.getById(Integer.valueOf(userId));
+//                    BeanUtil.copyProperties(business, account);
+                    account.setRole(RoleEnum.BUSINESS.name());
                     return account ;
+                }
+                if (RoleEnum.USER.name().equals(role)) {
+                    BeanUtils.copyProperties(staticUserService.getById(Integer.valueOf(userId)), account);
+                    account.setRole(RoleEnum.USER.name());
+                    return account;
                 }
 
             }

@@ -1,8 +1,11 @@
 package com.example.service;
 
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.example.entity.Orders;
+import com.example.entity.orders.OrdersDetail;
+
 
 /**
 * @author 有宇
@@ -10,5 +13,6 @@ import com.example.entity.Orders;
 * @createDate 2024-04-04 20:00:59
 */
 public interface OrdersService extends IService<Orders> {
+    Page<OrdersDetail> selectPage1(Integer userId, Integer pageNum, Integer pageSize);
 
 }

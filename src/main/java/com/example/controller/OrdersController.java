@@ -112,42 +112,42 @@ public class OrdersController {
     public Result selectPage(Integer userId,
                              @RequestParam(defaultValue = "1") Integer pageNum,
                              @RequestParam(defaultValue = "10") Integer pageSize) {
-        //1.创建分页构造器
-        Page<Orders> pageInfo = new Page<>(pageNum, pageSize);
-        //2.创建查询条件
-        LambdaQueryWrapper<Orders> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(Orders::getUserId, userId);
-        //添加查询条件
-        //3.添加排序
-        ordersService.page(pageInfo, queryWrapper);
-
-        //创建RoomTypeDto的分类查询对象
-        Page<OrdersDetail> dtoPage = new Page<>();
-        //将pageInfo的数据拷贝到dtoPage中
-        BeanUtils.copyProperties(pageInfo, dtoPage);
-
-        List<Orders> records = pageInfo.getRecords();
-        List<OrdersDetail> dtoList = records.stream().map((orders) -> {
-            OrdersDetail ordersDetail = new OrdersDetail();
-
-            BeanUtils.copyProperties(orders, ordersDetail);
-            Goods goods = goodsService.getById(orders.getGoodsId());
-            Business business = businessService.getById(goods.getBusinessId());
-            User user = userService.getById(orders.getUserId());
-            Address address = addressService.getById(orders.getAddressId());
-            ordersDetail.setBusinessName(business.getName());
-            ordersDetail.setGoodsName(goods.getName());
-            ordersDetail.setGoodsImg(goods.getImg());
-            ordersDetail.setGoodsUnit(goods.getUnit());
-            ordersDetail.setGoodsPrice(goods.getPrice());
-            ordersDetail.setUsername(user.getUsername());
-            ordersDetail.setPhone(user.getPhone());
-            ordersDetail.setUseraddress(address.getUseraddress());
-            return ordersDetail;
-
-        }).collect(Collectors.toList());
-        dtoPage.setRecords(dtoList);
-        return Result.success(dtoPage);
+//        //1.创建分页构造器
+//        Page<Orders> pageInfo = new Page<>(pageNum, pageSize);
+//        //2.创建查询条件
+//        LambdaQueryWrapper<Orders> queryWrapper = new LambdaQueryWrapper<>();
+//        queryWrapper.eq(Orders::getUserId, userId);
+//        //添加查询条件
+//        //3.添加排序
+//        ordersService.page(pageInfo, queryWrapper);
+//
+//        //创建RoomTypeDto的分类查询对象
+//        Page<OrdersDetail> dtoPage = new Page<>();
+//        //将pageInfo的数据拷贝到dtoPage中
+//        BeanUtils.copyProperties(pageInfo, dtoPage);
+//
+//        List<Orders> records = pageInfo.getRecords();
+//        List<OrdersDetail> dtoList = records.stream().map((orders) -> {
+//            OrdersDetail ordersDetail = new OrdersDetail();
+//
+//            BeanUtils.copyProperties(orders, ordersDetail);
+//            Goods goods = goodsService.getById(orders.getGoodsId());
+//            Business business = businessService.getById(goods.getBusinessId());
+//            User user = userService.getById(orders.getUserId());
+//            Address address = addressService.getById(orders.getAddressId());
+//            ordersDetail.setBusinessName(business.getName());
+//            ordersDetail.setGoodsName(goods.getName());
+//            ordersDetail.setGoodsImg(goods.getImg());
+//            ordersDetail.setGoodsUnit(goods.getUnit());
+//            ordersDetail.setGoodsPrice(goods.getPrice());
+//            ordersDetail.setUsername(user.getUsername());
+//            ordersDetail.setPhone(user.getPhone());
+//            ordersDetail.setUseraddress(address.getUseraddress());
+//            return ordersDetail;
+//
+//        }).collect(Collectors.toList());
+//        dtoPage.setRecords(dtoList);
+        return Result.success(ordersService.selectPage1(userId, pageNum, pageSize));
 
     }
 

@@ -11,6 +11,7 @@ import com.example.common.Constants;
 import com.example.common.Result;
 import com.example.common.enums.RoleEnum;
 import com.example.entity.Business;
+import com.example.entity.Comment;
 import com.example.entity.Goods;
 import com.example.entity.Typee;
 import com.example.entity.goods.GoodsDetail;
@@ -78,7 +79,6 @@ public class GoodsController {
     @GetMapping("/selectById")
     public Result selectById(@RequestParam Integer id) {
         GoodsDetail goodsDetail = new GoodsDetail();
-        System.out.println("-----------------------"+id);
         Goods goods = goodsService.getById(id);
         Typee type = typeService.getById(goods.getTypeId());
         Business business = businessService.getById(goods.getBusinessId());
@@ -88,6 +88,16 @@ public class GoodsController {
         return Result.success(goodsDetail);
     }
 
+    @GetMapping("/selectByName")
+    public Result selectByName(@RequestParam String name) {
+        LambdaQueryWrapper<Goods> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        if (StringUtils.isNotBlank(name)) {
+            lambdaQueryWrapper.like(Goods::getName, name);
+        }
+        List<Goods> list = goodsService.list(lambdaQueryWrapper);
+
+        return Result.success(list);
+    }
     /**
      * 查询所有
      */
