@@ -14,4 +14,5 @@ import java.util.List;
 public interface GoodsService extends IService<Goods> {
 
     List<Goods> selectTop15();
+    List<Goods> recommend();
 }

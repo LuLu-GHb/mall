@@ -160,6 +160,10 @@ public class GoodsController {
             IPage<Goods> resultpage = goodsService.page(page, lqw);
             return Result.success(resultpage);
         }
-
+    @GetMapping("/recommend")
+    public Result recommend(){
+        List<Goods> list = goodsService.recommend();
+        return Result.success(list);
+    }
 
 }
