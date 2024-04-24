@@ -2,11 +2,11 @@ package com.example.service.impl;
 
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.entity.*;
 import com.example.entity.comment.CommentDetail;
-import com.example.entity.orders.OrdersDetail;
 import com.example.mapper.CommentMapper;
 import com.example.service.BusinessService;
 import com.example.service.CommentService;
@@ -40,12 +40,17 @@ private UserService userService;
 
 
     @Override
-    public Object selectPage1(Integer pageNum, Integer pageSize) {
+    public IPage selectPage1(Integer userId,Integer pageNum, Integer pageSize) {
         //1.创建分页构造器
         Page<Comment> pageInfo = new Page<>(pageNum, pageSize);
         //2.创建查询条件
         LambdaQueryWrapper<Comment> queryWrapper = new LambdaQueryWrapper<>();
         //添加查询条件
+        Account curren = TokenUtils.getCurrentUser();
+        if(curren.getRole().equals("BUSINESS")){
+            queryWrapper.eq(Comment::getBusinessId, userId);
+            //添加查询条件
+        }
         //3.添加排序
         commentService.page(pageInfo, queryWrapper);
         //创建RoomTypeDto的分类查询对象
@@ -72,72 +77,72 @@ private UserService userService;
         return dtoPage;
     }
 
-    @Override
-    public Object selectPage2(Integer businessId, Integer pageNum, Integer pageSize) {
-        //1.创建分页构造器
-        Page<Comment> pageInfo = new Page<>(pageNum, pageSize);
-        //2.创建查询条件
-        LambdaQueryWrapper<Comment> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(Comment::getBusinessId, businessId);
-        //添加查询条件
-        //3.添加排序
-        commentService.page(pageInfo, queryWrapper);
-        //创建RoomTypeDto的分类查询对象
-        Page<CommentDetail> dtoPage = new Page<>();
-        //将pageInfo的数据拷贝到dtoPage中
-        BeanUtils.copyProperties(pageInfo, dtoPage);
-
-        List<Comment> records = pageInfo.getRecords();
-        List<CommentDetail> dtoList = records.stream().map((comment) -> {
-            CommentDetail commentDetail = new CommentDetail();
-
-            BeanUtils.copyProperties(comment, commentDetail);
-            Goods goods = goodsService.getById(comment.getGoodsId());
-            Business business = businessService.getById(goods.getBusinessId());
-            User user = userService.getById(comment.getUserId());
-            commentDetail.setBusinessName(business.getName());
-            commentDetail.setGoodsName(goods.getName());
-            commentDetail.setUserName(user.getUsername());
-            commentDetail.setUserAvatar(user.getAvatar());
-            return commentDetail;
-
-        }).collect(Collectors.toList());
-        dtoPage.setRecords(dtoList);
-        return dtoPage;
-    }
-    @Override
-    public Page<CommentDetail> selectPage3(Integer goodsId, Integer pageNum, Integer pageSize) {
-        //1.创建分页构造器
-        Page<Comment> pageInfo = new Page<>(pageNum, pageSize);
-        //2.创建查询条件
-        LambdaQueryWrapper<Comment> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(Comment::getGoodsId, goodsId);
-        //添加查询条件
-        //3.添加排序
-        commentService.page(pageInfo, queryWrapper);
-        //创建RoomTypeDto的分类查询对象
-        Page<CommentDetail> dtoPage = new Page<>();
-        //将pageInfo的数据拷贝到dtoPage中
-        BeanUtils.copyProperties(pageInfo, dtoPage);
-
-        List<Comment> records = pageInfo.getRecords();
-        List<CommentDetail> dtoList = records.stream().map((comment) -> {
-            CommentDetail commentDetail = new CommentDetail();
-
-            BeanUtils.copyProperties(comment, commentDetail);
-            Goods goods = goodsService.getById(comment.getGoodsId());
-            Business business = businessService.getById(goods.getBusinessId());
-            User user = userService.getById(comment.getUserId());
-            commentDetail.setBusinessName(business.getName());
-            commentDetail.setGoodsName(goods.getName());
-            commentDetail.setUserName(user.getUsername());
-            commentDetail.setUserAvatar(user.getAvatar());
-            return commentDetail;
-
-        }).collect(Collectors.toList());
-        dtoPage.setRecords(dtoList);
-        return dtoPage;
-    }
+//    @Override
+//    public Object selectPage2(Integer businessId, Integer pageNum, Integer pageSize) {
+//        //1.创建分页构造器
+//        Page<Comment> pageInfo = new Page<>(pageNum, pageSize);
+//        //2.创建查询条件
+//        LambdaQueryWrapper<Comment> queryWrapper = new LambdaQueryWrapper<>();
+//        queryWrapper.eq(Comment::getBusinessId, businessId);
+//        //添加查询条件
+//        //3.添加排序
+//        commentService.page(pageInfo, queryWrapper);
+//        //创建RoomTypeDto的分类查询对象
+//        Page<CommentDetail> dtoPage = new Page<>();
+//        //将pageInfo的数据拷贝到dtoPage中
+//        BeanUtils.copyProperties(pageInfo, dtoPage);
+//
+//        List<Comment> records = pageInfo.getRecords();
+//        List<CommentDetail> dtoList = records.stream().map((comment) -> {
+//            CommentDetail commentDetail = new CommentDetail();
+//
+//            BeanUtils.copyProperties(comment, commentDetail);
+//            Goods goods = goodsService.getById(comment.getGoodsId());
+//            Business business = businessService.getById(goods.getBusinessId());
+//            User user = userService.getById(comment.getUserId());
+//            commentDetail.setBusinessName(business.getName());
+//            commentDetail.setGoodsName(goods.getName());
+//            commentDetail.setUserName(user.getUsername());
+//            commentDetail.setUserAvatar(user.getAvatar());
+//            return commentDetail;
+//
+//        }).collect(Collectors.toList());
+//        dtoPage.setRecords(dtoList);
+//        return dtoPage;
+//    }
+//    @Override
+//    public Page<CommentDetail> selectPage3(Integer goodsId, Integer pageNum, Integer pageSize) {
+//        //1.创建分页构造器
+//        Page<Comment> pageInfo = new Page<>(pageNum, pageSize);
+//        //2.创建查询条件
+//        LambdaQueryWrapper<Comment> queryWrapper = new LambdaQueryWrapper<>();
+//        queryWrapper.eq(Comment::getGoodsId, goodsId);
+//        //添加查询条件
+//        //3.添加排序
+//        commentService.page(pageInfo, queryWrapper);
+//        //创建RoomTypeDto的分类查询对象
+//        Page<CommentDetail> dtoPage = new Page<>();
+//        //将pageInfo的数据拷贝到dtoPage中
+//        BeanUtils.copyProperties(pageInfo, dtoPage);
+//
+//        List<Comment> records = pageInfo.getRecords();
+//        List<CommentDetail> dtoList = records.stream().map((comment) -> {
+//            CommentDetail commentDetail = new CommentDetail();
+//
+//            BeanUtils.copyProperties(comment, commentDetail);
+//            Goods goods = goodsService.getById(comment.getGoodsId());
+//            Business business = businessService.getById(goods.getBusinessId());
+//            User user = userService.getById(comment.getUserId());
+//            commentDetail.setBusinessName(business.getName());
+//            commentDetail.setGoodsName(goods.getName());
+//            commentDetail.setUserName(user.getUsername());
+//            commentDetail.setUserAvatar(user.getAvatar());
+//            return commentDetail;
+//
+//        }).collect(Collectors.toList());
+//        dtoPage.setRecords(dtoList);
+//        return dtoPage;
+//    }
 }
 
 

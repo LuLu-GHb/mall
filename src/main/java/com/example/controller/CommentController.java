@@ -1,20 +1,11 @@
 package com.example.controller;
 
-import cn.hutool.core.util.ObjectUtil;
-import com.auth0.jwt.JWT;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.example.common.Constants;
 import com.example.common.Result;
-import com.example.common.enums.RoleEnum;
 import com.example.entity.Comment;
 import com.example.service.CommentService;
-
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @RestController
@@ -23,6 +14,7 @@ public class CommentController {
 
     @Resource
     private CommentService commentService;
+
 
     /**
      * 新增
@@ -91,32 +83,10 @@ public class CommentController {
      * 分页查询
      */
     @GetMapping("/selectPage")
-    public Result selectPage(Comment comment,
+    public Result selectPage(Integer userId,
                              @RequestParam(defaultValue = "1") Integer pageNum,
                              @RequestParam(defaultValue = "10") Integer pageSize) {
-        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-        String token = request.getHeader(Constants.TOKEN);
-        if (ObjectUtil.isNotEmpty(token)) {
-            String userRole = JWT.decode(token).getAudience().get(0);
-            String userId = userRole.split("-")[0];  // 获取用户id
-            String role = userRole.split("-")[1];    // 获取角色
-            System.out.println("--------------------------这是角色："+userRole);
-            if ("2-BUSINESS".equals(userRole)) {
-
-                return Result.success(commentService.selectPage1(pageNum, pageSize));
-            }
-            if (RoleEnum.BUSINESS.name().equals(userRole)) {
-
-
-                return Result.success(commentService.selectPage2(comment.getBusinessId(), pageNum, pageSize));
-            }
-
-        }
-
-//        if (RoleEnum.USER.name().equals(currentUser.getRole())) {
-//
-//        }
-        return Result.success(commentService.selectPage3(comment.getGoodsId(), pageNum, pageSize));
+        return Result.success(commentService.selectPage1(userId, pageNum, pageSize));
 
     }
 

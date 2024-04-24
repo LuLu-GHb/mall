@@ -2,6 +2,7 @@ package com.example.service.impl;
 
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.entity.*;
@@ -9,6 +10,7 @@ import com.example.entity.orders.OrdersDetail;
 import com.example.mapper.OrdersMapper;
 import com.example.service.*;
 
+import com.example.utils.TokenUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
@@ -36,13 +38,17 @@ public class OrdersServiceImpl extends ServiceImpl<OrdersMapper, Orders>
     private AddressService addressService;
 
     @Override
-    public Page<OrdersDetail> selectPage1(Integer userId, Integer pageNum, Integer pageSize) {
+    public IPage<OrdersDetail> selectPage1(Integer userId, Integer pageNum, Integer pageSize) {
         //1.创建分页构造器
         Page<Orders> pageInfo = new Page<>(pageNum, pageSize);
         //2.创建查询条件
         LambdaQueryWrapper<Orders> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(Orders::getUserId, userId);
-        //添加查询条件
+        Account curren = TokenUtils.getCurrentUser();
+        if(curren.getRole().equals("BUSINESS")){
+            queryWrapper.eq(Orders::getBusinessId, userId);
+            //添加查询条件
+        }
+
         //3.添加排序
         ordersService.page(pageInfo, queryWrapper);
 
@@ -74,6 +80,7 @@ public class OrdersServiceImpl extends ServiceImpl<OrdersMapper, Orders>
         dtoPage.setRecords(dtoList);
         return dtoPage;
     }
+
 }
 
 

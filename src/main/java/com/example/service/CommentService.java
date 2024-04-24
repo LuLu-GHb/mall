@@ -1,6 +1,7 @@
 package com.example.service;
 
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.example.entity.Comment;
@@ -13,9 +14,7 @@ import com.example.entity.orders.OrdersDetail;
 * @createDate 2024-04-06 13:23:58
 */
 public interface CommentService extends IService<Comment> {
-    Page<CommentDetail> selectPage3(Integer goodsId, Integer pageNum, Integer pageSize);
 
-    Object selectPage1(Integer pageNum, Integer pageSize);
+    IPage selectPage1(Integer userId,Integer pageNum, Integer pageSize);
 
-    Object selectPage2(Integer businessId, Integer pageNum, Integer pageSize);
 }

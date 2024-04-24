@@ -10,11 +10,14 @@ import com.example.entity.*;
 import com.example.entity.cart.CartDetail;
 import com.example.entity.orders.OrdersDetail;
 import com.example.service.*;
+import com.example.utils.TokenUtils;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -88,23 +91,6 @@ public class OrdersController {
         return Result.success(list);
     }
 
-//    /**
-//     * 分页查询
-//     */
-//    @GetMapping("/selectPage")
-//    public Result selectPage(Orders orders,
-//                             @RequestParam(defaultValue = "1") Integer pageNum,
-//                             @RequestParam(defaultValue = "10") Integer pageSize) {
-//        Page<Orders> page = new Page<>(pageNum, pageSize);
-//        LambdaQueryWrapper<Orders> lqw = new LambdaQueryWrapper<>();
-//        // 添加条件判断，如果查询条件不为空，则进行模糊查询
-////        if (StringUtils.isNotBlank(orders.getStatus())) {
-////            lqw.like(Orders::getUsername, business.getUsername());
-////        }
-//
-//        IPage<Orders> resultpage = ordersService.page(page,lqw);
-//        return Result.success(resultpage);
-//    }
     /**
      * 分页查询
      */
@@ -112,41 +98,6 @@ public class OrdersController {
     public Result selectPage(Integer userId,
                              @RequestParam(defaultValue = "1") Integer pageNum,
                              @RequestParam(defaultValue = "10") Integer pageSize) {
-//        //1.创建分页构造器
-//        Page<Orders> pageInfo = new Page<>(pageNum, pageSize);
-//        //2.创建查询条件
-//        LambdaQueryWrapper<Orders> queryWrapper = new LambdaQueryWrapper<>();
-//        queryWrapper.eq(Orders::getUserId, userId);
-//        //添加查询条件
-//        //3.添加排序
-//        ordersService.page(pageInfo, queryWrapper);
-//
-//        //创建RoomTypeDto的分类查询对象
-//        Page<OrdersDetail> dtoPage = new Page<>();
-//        //将pageInfo的数据拷贝到dtoPage中
-//        BeanUtils.copyProperties(pageInfo, dtoPage);
-//
-//        List<Orders> records = pageInfo.getRecords();
-//        List<OrdersDetail> dtoList = records.stream().map((orders) -> {
-//            OrdersDetail ordersDetail = new OrdersDetail();
-//
-//            BeanUtils.copyProperties(orders, ordersDetail);
-//            Goods goods = goodsService.getById(orders.getGoodsId());
-//            Business business = businessService.getById(goods.getBusinessId());
-//            User user = userService.getById(orders.getUserId());
-//            Address address = addressService.getById(orders.getAddressId());
-//            ordersDetail.setBusinessName(business.getName());
-//            ordersDetail.setGoodsName(goods.getName());
-//            ordersDetail.setGoodsImg(goods.getImg());
-//            ordersDetail.setGoodsUnit(goods.getUnit());
-//            ordersDetail.setGoodsPrice(goods.getPrice());
-//            ordersDetail.setUsername(user.getUsername());
-//            ordersDetail.setPhone(user.getPhone());
-//            ordersDetail.setUseraddress(address.getUseraddress());
-//            return ordersDetail;
-//
-//        }).collect(Collectors.toList());
-//        dtoPage.setRecords(dtoList);
         return Result.success(ordersService.selectPage1(userId, pageNum, pageSize));
 
     }

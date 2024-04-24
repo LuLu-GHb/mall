@@ -52,8 +52,6 @@ public class TokenUtils {
     @PostConstruct
     public void setUserService() { staticUserService = userService; }
 
-    public static Account account;
-    public static Business business;
     /**
      * 生成token
      */
@@ -67,6 +65,7 @@ public class TokenUtils {
      * 获取当前登录的用户信息
      */
     public static Account getCurrentUser() {
+        Account account = null; // 初始化 account 变量
         try {
             HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
             String token = request.getHeader(Constants.TOKEN);
@@ -74,12 +73,13 @@ public class TokenUtils {
                 String userRole = JWT.decode(token).getAudience().get(0);
                 String userId = userRole.split("-")[0];  // 获取用户id
                 String role = userRole.split("-")[1];    // 获取角色
+                System.out.println(userId+"-----------------------------"+role);
                 if (RoleEnum.ADMIN.name().equals(role)) {
                     return staticAdminService.selectById(Integer.valueOf(userId));
                 }
                 if (RoleEnum.BUSINESS.name().equals(role)) {
-//                    business = staticBusinessService.getById(Integer.valueOf(userId));
-//                    BeanUtil.copyProperties(business, account);
+                    account = new Account(); // 创建一个新的 account 对象
+                    BeanUtil.copyProperties(staticBusinessService.getById(Integer.valueOf(userId)), account);
                     account.setRole(RoleEnum.BUSINESS.name());
                     return account ;
                 }
