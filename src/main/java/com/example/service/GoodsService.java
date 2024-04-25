@@ -1,6 +1,7 @@
 package com.example.service;
 
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.example.entity.Goods;
 
@@ -15,4 +16,5 @@ public interface GoodsService extends IService<Goods> {
 
     List<Goods> selectTop15();
     List<Goods> recommend();
+    IPage selectPage( Goods goods,Integer pageNum, Integer pageSize);
 }

@@ -4,12 +4,18 @@ package com.example.service.impl;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.entity.*;
+import com.example.entity.goods.GoodsDetail;
 import com.example.mapper.*;
+import com.example.service.BusinessService;
 import com.example.service.GoodsService;
+import com.example.service.TypeService;
 import com.example.utils.TokenUtils;
 import com.example.utils.UserCF;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -32,13 +38,59 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods>
     @Resource
     private CartMapper cartMapper;
     @Resource
-    private OrdersMapper ordersMapper;
-    @Resource
     private CommentMapper commentMapper;
     @Resource
     private GoodsMapper goodsMapper;
     @Resource
     private UserMapper userMapper;
+    @Resource
+    private GoodsService goodsService;
+    @Resource
+    private TypeService typeService;
+    @Resource
+    private BusinessService businessService;
+    @Resource
+    private OrdersMapper ordersMapper;
+
+    @Override
+    public IPage selectPage(Goods goods,Integer pageNum, Integer pageSize) {
+        Account curren = TokenUtils.getCurrentUser();
+        //1.创建分页构造器
+        Page<Goods> pageInfo = new Page<>(pageNum, pageSize);
+        //2.创建查询条件
+        LambdaQueryWrapper<Goods> queryWrapper = new LambdaQueryWrapper<>();
+        //添加查询条件
+        if(ObjectUtil.isNotNull(goods.getName())){
+            queryWrapper.like(Goods::getName, goods.getName());
+        }
+
+        if(curren.getRole().equals("BUSINESS")){
+            queryWrapper.eq(Goods::getBusinessId, curren.getId());
+        }
+        //3.添加排序
+            goodsService.page(pageInfo, queryWrapper);
+
+        Page<GoodsDetail> dtoPage = new Page<>();
+        //将pageInfo的数据拷贝到dtoPage中
+        BeanUtils.copyProperties(pageInfo, dtoPage);
+
+        List<Goods> records = pageInfo.getRecords();
+        List<GoodsDetail> dtoList = records.stream().map((orders) -> {
+            GoodsDetail goodsDetail = new GoodsDetail();
+            BeanUtils.copyProperties(orders, goodsDetail);
+            Business business = businessService.getById(orders.getBusinessId());
+            Typee typee = typeService.getById(orders.getTypeId());
+            goodsDetail.setBusinessName(business.getName());
+            goodsDetail.setTypeName(typee.getName());
+            return goodsDetail;
+
+        }).collect(Collectors.toList());
+        dtoPage.setRecords(dtoList);
+        return dtoPage;
+    }
+
+
+
     @Override
     public List<Goods> selectTop15() {
         return lambdaQuery()

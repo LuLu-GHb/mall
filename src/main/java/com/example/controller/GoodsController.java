@@ -1,23 +1,15 @@
 package com.example.controller;
 
-import cn.hutool.core.util.ObjectUtil;
-import com.auth0.jwt.JWT;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.example.common.Constants;
 import com.example.common.Result;
-import com.example.common.enums.RoleEnum;
 import com.example.entity.Business;
-import com.example.entity.Comment;
 import com.example.entity.Goods;
 import com.example.entity.Typee;
 import com.example.entity.goods.GoodsDetail;
 import com.example.service.BusinessService;
 import com.example.service.GoodsService;
-
 import com.example.service.TypeService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
@@ -142,23 +134,9 @@ public class GoodsController {
     @GetMapping("/selectPage")
     public Result selectPage(Goods goods,
                              @RequestParam(defaultValue = "1") Integer pageNum,
-                             @RequestParam(defaultValue = "10") Integer pageSize, HttpServletRequest request) {
-        String token = request.getHeader(Constants.TOKEN);
-            String userRole = JWT.decode(token).getAudience().get(0);
-            String userId = userRole.split("-")[0];  // 获取用户id
-            String role = userRole.split("-")[1];    // 获取角色
-            Page<Goods> page = new Page<>(pageNum, pageSize);
-            LambdaQueryWrapper<Goods> lqw = new LambdaQueryWrapper<>();
-            // 添加条件判断，如果查询条件不为空，则进行模糊查询
-            if (StringUtils.isNotBlank(goods.getName())) {
-                lqw.like(Goods::getName, goods.getName());
-            }
-            if (RoleEnum.BUSINESS.name().equals(role)) {
-                lqw.eq(Goods::getBusinessId, userId);
-            }
+                             @RequestParam(defaultValue = "10") Integer pageSize) {
 
-            IPage<Goods> resultpage = goodsService.page(page, lqw);
-            return Result.success(resultpage);
+            return Result.success(goodsService.selectPage(goods,pageNum, pageSize));
         }
     @GetMapping("/recommend")
     public Result recommend(){
