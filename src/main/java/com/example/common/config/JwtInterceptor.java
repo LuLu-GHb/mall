@@ -57,7 +57,7 @@ public class JwtInterceptor implements HandlerInterceptor {
         if (ObjectUtil.isEmpty(token)) {
             throw new CustomException(ResultCodeEnum.TOKEN_INVALID_ERROR);
         }
-        Account account = null;
+        Account account = new Account();
         Business business = null;
         User user = null;
         try {
@@ -65,6 +65,7 @@ public class JwtInterceptor implements HandlerInterceptor {
             String userRole = JWT.decode(token).getAudience().get(0);
             String userId = userRole.split("-")[0];
             String role = userRole.split("-")[1];
+
             // 根据userId查询数据库
             if (RoleEnum.ADMIN.name().equals(role)) {
                 account = adminService.selectById(Integer.valueOf(userId));
